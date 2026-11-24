@@ -30,7 +30,6 @@ const KITCHEN_STANDARDS = [
   { icon: Check, text: 'Daily cleaning checklist' },
 ];
 
-// TODO: move to backend
 const TRAIL_HELPERS = [
   'Washed in clean water, checked by our supervisor',
   'Cooked fresh in small batches',
@@ -62,7 +61,6 @@ function getTrailStatuses(steps) {
     const stepMin = h * 60 + m;
     return { ...step, stepMin, done: nowMin >= stepMin + 15, current: nowMin >= stepMin && nowMin < stepMin + 15 };
   });
-  // Fallback: if all upcoming (early morning), mark first 3 done, 4th current
   if (statuses.every((s) => !s.done && !s.current)) {
     return steps.map((s, i) => ({ ...s, done: i < 3, current: i === 3 }));
   }
@@ -89,7 +87,6 @@ export default function Kitchen() {
   const scrollToClips = () => clipsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const scrollToBooking = () => bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Trail clip video for right column
   const trailClipVideo = {
     id: 'trail-clip',
     title: "Packing with your name, 11:00",
@@ -102,7 +99,7 @@ export default function Kitchen() {
   return (
     <div className="bg-cream dark:bg-ink">
       {/* HERO */}
-      <section className="relative overflow-hidden bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
+      <section className="relative overflow-hidden bg-cream px-4 py-16 text-textBase dark:bg-ink dark:text-white sm:px-6 sm:py-24">
         <AmbientGlow />
         <DotGrid />
         <div className="relative z-10 mx-auto max-w-7xl">
@@ -115,7 +112,7 @@ export default function Kitchen() {
             >
               <motion.span
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm"
+                className="inline-flex items-center gap-2 rounded-full border border-cream-border bg-white px-3 py-1.5 text-xs font-semibold text-textBase dark:border-white/15 dark:bg-white/10 dark:text-white backdrop-blur-sm"
               >
                 <Play size={12} fill="currentColor" /> Today's kitchen
               </motion.span>
@@ -123,12 +120,12 @@ export default function Kitchen() {
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
                 className="mt-4 font-display text-4xl font-extrabold tracking-tightest [text-wrap:balance] sm:text-5xl lg:text-6xl"
               >
-                Hamara kitchen<br />
+                <span className="text-[#1A1210] dark:text-white">Hamara kitchen</span><br />
                 <span className="gradient-text">khula hai.</span>
               </motion.h1>
               <motion.p
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-                className="mt-4 max-w-lg text-base leading-relaxed text-[#D8CFC7] [text-wrap:pretty] sm:text-lg"
+                className="mt-4 max-w-lg text-base leading-relaxed text-[#6B5F57] dark:text-[#D8CFC7] [text-wrap:pretty] sm:text-lg"
               >
                 Every morning, our kitchen is filmed from washing vegetables to packing your box. No hidden doors, no shortcuts. Proof, not promise.
               </motion.p>
@@ -144,7 +141,7 @@ export default function Kitchen() {
                 </button>
                 <button
                   onClick={scrollToBooking}
-                  className="flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-6 text-sm font-bold text-white transition-colors hover:bg-white/10"
+                  className="flex h-12 items-center justify-center gap-2 rounded-full border border-[#1A1210]/20 bg-transparent px-6 text-sm font-bold text-[#1A1210] transition-colors hover:bg-[#1A1210]/5 dark:border-white/20 dark:text-white dark:hover:bg-white/5"
                 >
                   Open Kitchen Day for parents
                 </button>
@@ -169,6 +166,7 @@ export default function Kitchen() {
                   aspect="4/3"
                   focal={images.kitchen.hero?.focal || images.hero.focal}
                   overlay
+                  fallbackSrc={images.hero.src}
                   className="h-full w-full"
                 />
                 <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
@@ -187,26 +185,26 @@ export default function Kitchen() {
                     <Play size={26} className="ml-0.5" fill="currentColor" />
                   </button>
                 </div>
-              </motion.div>
-              {/* Mini trail card bottom-right */}
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute -bottom-6 -right-4 hidden w-52 rounded-2xl border border-white/10 bg-[#141011]/95 p-4 text-white shadow-card backdrop-blur-md sm:block"
-                style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}
-              >
-                <p className="text-xs font-semibold uppercase tracking-wide2 text-brand-400">Today's trail</p>
-                <ul className="mt-2 space-y-1.5">
-                  {trailSteps.slice(0, 3).map((step) => (
-                    <li key={step.time} className="flex items-center gap-2 text-xs">
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-success">
-                        <Check size={10} className="text-white" />
-                      </span>
-                      <span className="text-white/90">{step.time}</span>
-                      <span className="text-white/60">{step.label}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Mini trail card inside the frame edge */}
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                  className="absolute bottom-3 right-3 w-48 rounded-2xl border border-cream-border bg-[#FFF8EE]/95 p-3 text-textBase shadow-card backdrop-blur-md dark:border-white/10 dark:bg-[#141011]/95 dark:text-white"
+                  style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide2 text-brand-600 dark:text-brand-400">Today's trail</p>
+                  <ul className="mt-2 space-y-1.5">
+                    {trailSteps.slice(0, 3).map((step) => (
+                      <li key={step.time} className="flex items-center gap-2 text-xs">
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-success">
+                          <Check size={10} className="text-white" />
+                        </span>
+                        <span className="font-medium text-textBase dark:text-white/90">{step.time}</span>
+                        <span className="text-muted dark:text-white/60">{step.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
@@ -214,7 +212,7 @@ export default function Kitchen() {
       </section>
 
       {/* STATS ROW */}
-      <section className="bg-ink px-4 pb-12 sm:px-6">
+      <section className="bg-cream px-4 pb-12 dark:bg-ink sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {KITCHEN_STATS.map((stat, i) => {
@@ -226,14 +224,14 @@ export default function Kitchen() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="flex flex-col items-start gap-2 rounded-3xl border border-white/10 bg-[#141011] p-5 text-white transition-all dark:hover:border-brand-500/40"
+                  className="flex flex-col items-start gap-2 rounded-3xl border border-cream-border bg-[#FFF8EE] p-5 text-textBase transition-all dark:border-white/10 dark:bg-[#141011] dark:text-white dark:hover:border-brand-500/40"
                   style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-500/20 text-brand-400">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
                     <Icon size={22} />
                   </span>
-                  <p className="text-xl font-extrabold tracking-tightest">{stat.number}</p>
-                  <p className="text-sm text-[#D8CFC7]">{stat.label}</p>
+                  <p className="text-xl font-extrabold tracking-tightest [text-wrap:balance]">{stat.number}</p>
+                  <p className="text-sm text-[#6B5F57] dark:text-[#D8CFC7]">{stat.label}</p>
                 </motion.div>
               );
             })}
@@ -242,10 +240,10 @@ export default function Kitchen() {
       </section>
 
       {/* CLIP GALLERY */}
-      <section ref={clipsRef} className="relative overflow-hidden bg-ink px-4 py-16 text-white sm:px-6">
+      <section ref={clipsRef} className="relative overflow-hidden bg-cream px-4 py-16 text-textBase dark:bg-ink dark:text-white sm:px-6">
         <AmbientGlow />
         <div className="relative z-10 mx-auto max-w-7xl">
-          <span className="eyebrow text-brand-400">Today's clips</span>
+          <span className="eyebrow">Today's clips</span>
           <h2 className="mb-8 mt-2 font-display text-3xl font-extrabold tracking-tightest [text-wrap:balance] sm:text-4xl">
             Din bhar,<br />
             <span className="gradient-text">har step.</span>
@@ -257,37 +255,37 @@ export default function Kitchen() {
       </section>
 
       {/* TODAY'S TRAIL */}
-      <section className="relative overflow-hidden bg-ink px-4 py-16 text-white sm:px-6">
+      <section className="relative overflow-hidden bg-cream px-4 py-16 text-textBase dark:bg-ink dark:text-white sm:px-6">
         <AmbientGlow />
         <DotGrid />
         <div className="relative z-10 mx-auto max-w-7xl">
-          {/* Header (full width) */}
+          {/* Header */}
           <div className="mb-10">
-            <span className="text-[13px] font-semibold uppercase tracking-[0.2em]" style={{ color: '#FF8A0A' }}>
+            <span className="eyebrow">
               Today's trail
             </span>
             <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tightest [text-wrap:balance] sm:text-4xl lg:text-5xl">
               Subah 6 baje se<br />
               <span className="gradient-text">dupahar tak.</span>
             </h2>
-            <p className="mt-3 max-w-md text-base leading-relaxed text-[#D8CFC7] [text-wrap:pretty]">
+            <p className="mt-3 max-w-md text-base leading-relaxed text-[#6B5F57] dark:text-[#D8CFC7] [text-wrap:pretty]">
               Every step of your meal leaves a trail. From washed vegetables to a box with your name on it.
             </p>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2 lg:items-stretch">
-            {/* LEFT: TrailCard (vertical timeline) */}
+            {/* LEFT: TrailCard */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5 }}
-              className="rounded-3xl border border-white/10 bg-[#141011] p-7 text-white"
+              className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-7 text-textBase dark:border-white/10 dark:bg-[#141011] dark:text-white"
               style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}
             >
               <div className="mb-5 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white">Aaj ka khana</h3>
-                <span className="text-sm text-[#D8CFC7]">{todayStr}</span>
+                <h3 className="text-lg font-bold text-[#1A1210] dark:text-white">Aaj ka khana</h3>
+                <span className="text-sm text-[#6B5F57] dark:text-[#D8CFC7]">{todayStr}</span>
               </div>
               <div className="space-y-0">
                 {statuses.map((step, i) => {
@@ -303,7 +301,7 @@ export default function Kitchen() {
                           viewport={{ once: true }}
                           transition={{ delay: i * 0.12, type: 'spring', stiffness: 260, damping: 20 }}
                           className={`relative flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                            step.done ? 'bg-success text-white' : step.current ? 'bg-brand-500 text-white' : 'border-2 border-white/20 bg-transparent text-white/40'
+                            step.done ? 'bg-success text-white' : step.current ? 'bg-brand-500 text-white' : 'border-2 border-cream-border bg-transparent text-muted dark:border-white/20 dark:text-white/40'
                           }`}
                         >
                           {step.done ? <Check size={14} /> : step.current ? (
@@ -314,7 +312,7 @@ export default function Kitchen() {
                           ) : i + 1}
                         </motion.div>
                         {!isLast && (
-                          <div className={`my-1 h-full w-0.5 flex-1 ${lineDone ? 'bg-success' : 'border-l-2 border-dashed border-white/15'}`} />
+                          <div className={`my-1 h-full w-0.5 flex-1 ${lineDone ? 'bg-success' : 'border-l-2 border-dashed border-cream-border dark:border-white/15'}`} />
                         )}
                       </div>
                       <motion.div
@@ -325,13 +323,13 @@ export default function Kitchen() {
                         className="pb-6"
                       >
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold text-brand-400">{step.time}</p>
+                          <p className="text-sm font-semibold text-brand-600 dark:text-brand-400">{step.time}</p>
                           {step.current && (
                             <span className="rounded-full bg-brand-500 px-2 py-0.5 text-[10px] font-bold uppercase text-white">Now</span>
                           )}
                         </div>
-                        <p className="text-base font-semibold text-white">{step.label}</p>
-                        <p className="text-sm text-[#D8CFC7]">{helper}</p>
+                        <p className="text-base font-semibold text-[#1A1210] dark:text-white">{step.label}</p>
+                        <p className="text-sm text-[#6B5F57] dark:text-[#D8CFC7]">{helper}</p>
                       </motion.div>
                     </div>
                   );
@@ -339,10 +337,10 @@ export default function Kitchen() {
               </div>
               {/* Progress bar */}
               <div className="mt-2">
-                <div className="mb-1.5 flex items-center justify-between text-xs text-[#D8CFC7]">
+                <div className="mb-1.5 flex items-center justify-between text-xs text-[#6B5F57] dark:text-[#D8CFC7]">
                   <span>{doneCount} of {statuses.length} steps done</span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-cream-border dark:bg-white/10">
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: `${(doneCount / statuses.length) * 100}%` }}
@@ -363,19 +361,19 @@ export default function Kitchen() {
               className="flex flex-col gap-6"
             >
               {/* 1. Clip card */}
-              <div className="group rounded-3xl border border-white/10 bg-[#141011] p-3 transition-all hover:-translate-y-1.5 dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+              <div className="group rounded-3xl border border-cream-border bg-[#FFF8EE] p-3 transition-all hover:-translate-y-1.5 dark:border-white/10 dark:bg-[#141011] dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
                 <VideoThumbnail video={trailClipVideo} className="shadow-card" />
               </div>
 
               {/* 2. Parents can watch too */}
-              <div className="rounded-3xl border border-white/10 bg-[#141011] p-6 text-white transition-all hover:-translate-y-1.5 dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+              <div className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-6 text-textBase transition-all hover:-translate-y-1.5 dark:border-white/10 dark:bg-[#141011] dark:text-white dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-success/20 text-success">
                     <MessageCircle size={22} />
                   </span>
-                  <h3 className="text-lg font-bold text-white">Parents can watch too.</h3>
+                  <h3 className="text-lg font-bold text-[#1A1210] dark:text-white">Parents can watch too.</h3>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-[#D8CFC7] [text-wrap:pretty]">
+                <p className="mt-3 text-sm leading-relaxed text-[#6B5F57] dark:text-[#D8CFC7] [text-wrap:pretty]">
                   Weekly menu and kitchen clips on WhatsApp, straight to your family.
                 </p>
                 <a
@@ -389,14 +387,14 @@ export default function Kitchen() {
               </div>
 
               {/* 3. Kitchen standards checklist */}
-              <div className="rounded-3xl border border-white/10 bg-[#141011] p-6 text-white transition-all hover:-translate-y-1.5 dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
-                <h3 className="text-lg font-bold text-white">What we follow daily</h3>
+              <div className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-6 text-textBase transition-all hover:-translate-y-1.5 dark:border-white/10 dark:bg-[#141011] dark:text-white dark:hover:border-brand-500/40" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+                <h3 className="text-lg font-bold text-[#1A1210] dark:text-white">What we follow daily</h3>
                 <ul className="mt-4 space-y-3">
                   {KITCHEN_STANDARDS.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <li key={item.text} className="flex items-start gap-3 text-sm text-[#D8CFC7]">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-500/20 text-brand-400">
+                      <li key={item.text} className="flex items-start gap-3 text-sm text-[#6B5F57] dark:text-[#D8CFC7]">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
                           <Icon size={16} />
                         </span>
                         {item.text}
@@ -434,6 +432,7 @@ export default function Kitchen() {
                       aspect="3/4"
                       focal={images.aunties[(idx % 4) + 1].focal}
                       overlay
+                      fallbackSrc={images.hero.src}
                       className="h-full w-full"
                     />
                   </div>
@@ -450,36 +449,36 @@ export default function Kitchen() {
       </section>
 
       {/* HYGIENE PROOF */}
-      <section className="relative overflow-hidden bg-ink px-4 py-16 text-white sm:px-6">
+      <section className="relative overflow-hidden bg-cream px-4 py-16 text-textBase dark:bg-ink dark:text-white sm:px-6">
         <AmbientGlow />
         <div className="relative z-10 mx-auto max-w-7xl">
-          <span className="eyebrow text-brand-400">Proof, not promise</span>
+          <span className="eyebrow">Proof, not promise</span>
           <h2 className="mb-8 mt-2 font-display text-3xl font-extrabold tracking-tightest sm:text-4xl">Hygiene & <span className="gradient-text">sourcing.</span></h2>
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-3xl border border-white/10 bg-[#141011] p-6 text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+            <div className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-6 text-textBase dark:border-white/10 dark:bg-[#141011] dark:text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
               <ShieldCheck size={28} className="text-success" />
-              <h3 className="mt-3 font-bold">FSSAI Licence</h3>
+              <h3 className="mt-3 font-bold text-[#1A1210] dark:text-white">FSSAI Licence</h3>
               <p className="mt-1 font-mono text-sm">FSSAI-XXXXXXXXXX</p>
-              <p className="mt-1 text-xs text-white/50">Placeholder — replace with real number.</p>
-              <p className="mt-3 text-sm text-[#D8CFC7]">Last audit: <b>15 Nov 2026</b></p>
+              <p className="mt-1 text-xs text-muted">Placeholder — replace with real number.</p>
+              <p className="mt-3 text-sm text-[#6B5F57] dark:text-[#D8CFC7]">Last audit: <b>15 Nov 2026</b></p>
             </div>
-            <div className="rounded-3xl border border-white/10 bg-[#141011] p-6 text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+            <div className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-6 text-textBase dark:border-white/10 dark:bg-[#141011] dark:text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
               <Check size={28} className="text-success" />
-              <h3 className="mt-3 font-bold">Hygiene checklist</h3>
+              <h3 className="mt-3 font-bold text-[#1A1210] dark:text-white">Hygiene checklist</h3>
               <ul className="mt-3 space-y-2">
                 {HYGIENE_CHECKLIST.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-[#D8CFC7]">
+                  <li key={item} className="flex items-start gap-2 text-sm text-[#6B5F57] dark:text-[#D8CFC7]">
                     <Check size={14} className="mt-0.5 shrink-0 text-success" /> {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-3xl border border-white/10 bg-[#141011] p-6 text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
-              <MapPin size={28} className="text-brand-400" />
-              <h3 className="mt-3 font-bold">Ingredient sourcing</h3>
+            <div className="rounded-3xl border border-cream-border bg-[#FFF8EE] p-6 text-textBase dark:border-white/10 dark:bg-[#141011] dark:text-white" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+              <MapPin size={28} className="text-brand-600 dark:text-brand-400" />
+              <h3 className="mt-3 font-bold text-[#1A1210] dark:text-white">Ingredient sourcing</h3>
               <ul className="mt-3 space-y-2">
                 {INGREDIENT_SOURCES.map((item) => (
-                  <li key={item} className="text-sm text-[#D8CFC7]">{item}</li>
+                  <li key={item} className="text-sm text-[#6B5F57] dark:text-[#D8CFC7]">{item}</li>
                 ))}
               </ul>
             </div>

@@ -47,57 +47,57 @@ function PageLoader() {
 export default function AppRoutes() {
   const location = useLocation();
   return (
-    <Suspense fallback={<PageLoader />}>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Suspense fallback={<PageLoader />}>
           <Routes location={location}>
-        {/* Public */}
-        <Route element={<PublicLayout />}>
-          <Route path={ROUTES.HOME} element={<Home />} />
-          <Route path={ROUTES.LOGIN} element={<Login />} />
-          <Route path={ROUTES.SIGNUP} element={<Signup />} />
-          <Route path={ROUTES.MENU} element={<Menu />} />
-          <Route path={ROUTES.KITCHEN} element={<Kitchen />} />
-          <Route path={ROUTES.PLANS} element={<Plans />} />
-          <Route path={ROUTES.HOSTELS} element={<Hostels />} />
-          <Route path={ROUTES.HOW_IT_WORKS} element={<HowItWorks />} />
-          <Route path={ROUTES.ORDER} element={<Order />} />
-          <Route path={ROUTES.UNAUTHORIZED} element={<Unauthorized />} />
-        </Route>
+          {/* Public */}
+          <Route element={<PublicLayout />}>
+            <Route path={ROUTES.HOME} element={<Home />} />
+            <Route path={ROUTES.LOGIN} element={<Login />} />
+            <Route path={ROUTES.SIGNUP} element={<Signup />} />
+            <Route path={ROUTES.MENU} element={<Menu />} />
+            <Route path={ROUTES.KITCHEN} element={<Kitchen />} />
+            <Route path={ROUTES.PLANS} element={<Plans />} />
+            <Route path={ROUTES.HOSTELS} element={<Hostels />} />
+            <Route path={ROUTES.HOW_IT_WORKS} element={<HowItWorks />} />
+            <Route path={ROUTES.ORDER} element={<Order />} />
+            <Route path={ROUTES.UNAUTHORIZED} element={<Unauthorized />} />
+          </Route>
 
-        {/* Student */}
-        <Route element={<ProtectedRoute role="STUDENT"><DashboardLayout /></ProtectedRoute>}>
-          <Route path={ROUTES.STUDENT.DASHBOARD} element={<StudentDashboard />} />
-          <Route path={ROUTES.STUDENT.SKIP_PAUSE} element={<SkipPause />} />
-          <Route path={ROUTES.STUDENT.PLAN} element={<MyPlan />} />
-          <Route path={ROUTES.STUDENT.ORDERS} element={<StudentOrders />} />
-          <Route path={ROUTES.STUDENT.PROFILE} element={<StudentProfile />} />
-        </Route>
+          {/* Student */}
+          <Route element={<ProtectedRoute role="STUDENT"><DashboardLayout /></ProtectedRoute>}>
+            <Route path={ROUTES.STUDENT.DASHBOARD} element={<StudentDashboard />} />
+            <Route path={ROUTES.STUDENT.SKIP_PAUSE} element={<SkipPause />} />
+            <Route path={ROUTES.STUDENT.PLAN} element={<MyPlan />} />
+            <Route path={ROUTES.STUDENT.ORDERS} element={<StudentOrders />} />
+            <Route path={ROUTES.STUDENT.PROFILE} element={<StudentProfile />} />
+          </Route>
 
-        {/* Admin */}
-        <Route element={<ProtectedRoute role="ADMIN"><DashboardLayout /></ProtectedRoute>}>
-          <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
-          <Route path={ROUTES.ADMIN.STUDENTS} element={<AdminStudents />} />
-          <Route path={ROUTES.ADMIN.SKIPS} element={<AdminSkips />} />
-          <Route path={ROUTES.ADMIN.MENU} element={<MenuManager />} />
-          <Route path={ROUTES.ADMIN.PLANS} element={<PlansManager />} />
-          <Route path={ROUTES.ADMIN.ORDERS} element={<AdminOrders />} />
-          <Route path={ROUTES.ADMIN.KITCHEN_FEED} element={<KitchenFeed />} />
-          <Route path={ROUTES.ADMIN.HOSTELS} element={<AdminHostels />} />
-          <Route path={ROUTES.ADMIN.FEEDBACK} element={<AdminFeedback />} />
-        </Route>
+          {/* Admin */}
+          <Route element={<ProtectedRoute role="ADMIN"><DashboardLayout /></ProtectedRoute>}>
+            <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
+            <Route path={ROUTES.ADMIN.STUDENTS} element={<AdminStudents />} />
+            <Route path={ROUTES.ADMIN.SKIPS} element={<AdminSkips />} />
+            <Route path={ROUTES.ADMIN.MENU} element={<MenuManager />} />
+            <Route path={ROUTES.ADMIN.PLANS} element={<PlansManager />} />
+            <Route path={ROUTES.ADMIN.ORDERS} element={<AdminOrders />} />
+            <Route path={ROUTES.ADMIN.KITCHEN_FEED} element={<KitchenFeed />} />
+            <Route path={ROUTES.ADMIN.HOSTELS} element={<AdminHostels />} />
+            <Route path={ROUTES.ADMIN.FEEDBACK} element={<AdminFeedback />} />
+          </Route>
 
-        {/* 404 */}
+          {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </motion.div>
-      </AnimatePresence>
-    </Suspense>
+        </Suspense>
+      </motion.div>
+    </AnimatePresence>
   );
 }

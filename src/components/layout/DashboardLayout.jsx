@@ -11,11 +11,11 @@ export default function DashboardLayout() {
   const title = isStudent ? 'Student' : 'Admin';
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-[100dvh] flex-col">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar nav={nav} title={title} />
-        <main className="flex-1 px-4 py-6 pb-24 sm:px-6 lg:pb-6">
+        <main className="min-w-0 flex-1 px-4 py-6 pb-28 sm:px-6 lg:pb-6">
           <Outlet />
         </main>
       </div>

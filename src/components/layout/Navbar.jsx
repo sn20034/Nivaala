@@ -78,7 +78,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-cream-border bg-cream/80 backdrop-blur-md dark:border-ink-border dark:bg-ink/80">
+      <header className="sticky top-0 z-50 w-full border-b border-cream-border bg-cream/80 backdrop-blur-md dark:border-ink-border dark:bg-ink/80">
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link to={ROUTES.HOME} className="flex shrink-0 items-center gap-2.5">
@@ -153,10 +153,16 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Mobile hamburger */}
+            {/* Mobile hamburger — opens public drawer on public pages, dashboard drawer on dashboard pages */}
             <button
               ref={hamburgerRef}
-              onClick={() => setMobileOpen(true)}
+              onClick={() => {
+                if (isAuthenticated) {
+                  window.dispatchEvent(new CustomEvent('open-dashboard-drawer'));
+                } else {
+                  setMobileOpen(true);
+                }
+              }}
               className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-border text-textBase dark:border-ink-border dark:text-white lg:hidden"
               aria-label="Open menu"
               aria-expanded={mobileOpen}

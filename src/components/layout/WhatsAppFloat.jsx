@@ -1,5 +1,6 @@
 import { MessageCircle, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { WHATSAPP_LINK } from '@/utils/constants';
 
 const BANNER_KEY = 'nivaala_whatsapp_banner_dismissed';
@@ -8,6 +9,9 @@ export default function WhatsAppFloat() {
   const [bannerOpen, setBannerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const location = useLocation();
+
+  const isDashboard = location.pathname.startsWith('/student') || location.pathname.startsWith('/admin');
 
   useEffect(() => {
     const check = () => {
@@ -35,7 +39,7 @@ export default function WhatsAppFloat() {
     try { localStorage.setItem(BANNER_KEY, '1'); } catch {}
   };
 
-  if (drawerOpen) return null;
+  if (drawerOpen || isDashboard) return null;
 
   const showFloatingButton = !isMobile || !bannerOpen;
 

@@ -11,6 +11,7 @@ const ASPECT_CLASS = {
 /**
  * SmartImage — lazy-loaded image with skeleton shimmer, fade-in,
  * and a warm gradient fallback so broken images never show.
+ * If `fallbackSrc` is provided, it is tried before the gradient placeholder.
  */
 export default function SmartImage({
   src,
@@ -21,16 +22,34 @@ export default function SmartImage({
   className = '',
   overlay = false,
   imgClassName = '',
+  fallbackSrc,
 }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
   const imgRef = useRef(null);
 
   useEffect(() => {
-    if (imgRef.current?.complete) setLoaded(true);
+    setCurrentSrc(src);
+    setLoaded(false);
+    setErrored(false);
   }, [src]);
 
-  if (errored || !src) {
+  useEffect(() => {
+    if (imgRef.current?.complete) setLoaded(true);
+  }, [currentSrc]);
+
+  const handleError = () => {
+    if (fallbackSrc && currentSrc !== fallbackSrc) {
+      setCurrentSrc(fallbackSrc);
+      setLoaded(false);
+      setErrored(false);
+    } else {
+      setErrored(true);
+    }
+  };
+
+  if (errored || !currentSrc) {
     return (
       <div
         className={`relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-brand-100 to-cream-surface dark:from-ink-surface dark:to-ink ${ASPECT_CLASS[aspect] || ''} ${className}`}
@@ -52,13 +71,13 @@ export default function SmartImage({
       )}
       <img
         ref={imgRef}
-        src={src}
+        src={currentSrc}
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         fetchPriority={priority ? 'high' : 'auto'}
         onLoad={() => setLoaded(true)}
-        onError={() => setErrored(true)}
+        onError={handleError}
         style={{ objectPosition: focal }}
         className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
       />
